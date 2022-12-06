@@ -6,7 +6,9 @@ This policy applies to all data which provides the service delivered (“Graylog
 These requirements are to be used by default. They can be overridden by the requirements
 specific to a given component (see [Platform Component Specifics](#platform-component-specifics) below).
 ### Log Retention
-We have to be able to fully guarantee backups and restoration of backups for the full period of time that a customer retains data with us. For example, if a customer bought 90 days of log retention, we have to keep a backup of all those 90 days to be able to fully restore all data. 
+* We must fully guarantee backups and restoration of backups for the full period of time that a customer retains data with us.
+	* For example, if a customer bought 90 days of log retention, we have to keep a backup of all those 90 days to be able to fully restore all data.
+* To protect customer data against datacenter failure, backups will be distributed to at least one additional datacenter location.
 ### Alerting
 ### Encryption
 ### Replication
