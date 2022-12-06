@@ -1,10 +1,10 @@
 # Cloud Backup and Recovery Policy
-This policy is designed to protect data within Graylog Cloud to be sure it is not lost and can be recovered in the event of an equipment failure, intentional destruction of data, or disaster.  It encompasses the Retention Cycle for Customers, detailing [Log Retention](###-Log-Retention), [Alerting](###-Alerting), [Encryption](###-Encryption), [Replication](###-Replication) Across Sites and [Procedures](###-Procedures). General requirements for each of these components will be outlined and specifics related to our platform implementation (a.k.a. ["Platform Component Specifics"](#-Platform-Component-Specifics)) will be provided below.
+This policy is designed to protect data within Graylog Cloud to be sure it is not lost and can be recovered in the event of an equipment failure, intentional destruction of data, or disaster.  It encompasses the Retention Cycle for Customers, detailing [Log Retention](#log-retention), [Alerting](#alerting), [Encryption](#encryption), [Replication](#replication) Across Sites and [Procedures](#procedures). General requirements for each of these components will be outlined and specifics related to our platform implementation (a.k.a. ["Platform Component Specifics"](#platform-component-specifics)) will be provided below.
 ## Scope
 This policy applies to all data which provides the service delivered (“Graylog Cloud”) that is owned/leased and operated by Graylog, Inc. 
 ## General Requirements
 These requirements are to be used by default. They can be overridden by the requirements
-specific to a given component (see ["Platform Component Specifics"](#-Platform-Component-Specifics) below).
+specific to a given component (see [Platform Component Specifics](#platform-component-specifics) below).
 ### Log Retention
 We have to be able to fully guarantee backups and restoration of backups for the full period of time that a customer retains data with us. For example, if a customer bought 90 days of log retention, we have to keep a backup of all those 90 days to be able to fully restore all data. 
 ### Alerting
