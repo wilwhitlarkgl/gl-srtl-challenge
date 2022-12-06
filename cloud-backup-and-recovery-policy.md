@@ -78,14 +78,23 @@ specific to a given component (see [Platform Component Specifics](#platform-comp
 	* The owners of this policy (See "[Ownership](#ownership)" below) are responsible for scheduling maintenance, unless otherwise specified.
 
 # Platform Component Specifics
-Overview:
+In its current implementation, the service architecture makes use of the following AWS-specific products:
+* AWS OpenSearch 
+	* This is the search service used for the architecture. This encompasses all references to "search service" in the [General Requirements](#general-requirements) section above.
+* AWS S3
+	* Manual backups for the OpenSearch Service. See the [Manual Snapshots](#manual-snapshots) section below.
+* Elastic Kubernetes Service (EKS)
+	* This is used for the Application and Monitoring compute resources.
+* Fargate
+	* EKS invokes on-demand Fargate instances to run its Kubernetes pods.
+* DocumentDB
+	* Application settings are contained within a MongoDB-compatible cluster and make use of the AWS DocumentDB product.
+
 
 ## Architecture Diagram
 
 ## AWS OpenSearch Service
-Snapshots in Amazon OpenSearch Service are backups of a cluster's indexes and state. State
-includes cluster settings, node information, index settings, and shard allocation.
-OpenSearch snapshots are incremental, meaning they only store data that changed since the last successful snapshot. The AWS OpenSearch Service provides both automated and manual snapshots. We use both.
+Snapshots in Amazon OpenSearch Service are backups of a cluster's indexes and state. State includes cluster settings, node information, index settings, and shard allocation. OpenSearch snapshots are incremental, meaning they only store data that changed since the last successful snapshot. The AWS OpenSearch Service provides both automated and manual snapshots. We use both.
 
 ### Automated snapshots
 Every hour: OpenSearch domain -> preconfigured S3 bucket
@@ -102,16 +111,18 @@ Every 15 min: OpenSearch domain -> primary S3 bucket -> secondary S3 bucket.
  * As the name suggests, manual snapshot creation has to be initiated. They are stored in an S3 bucket that we provide, and standard S3 charges apply.
  * Manual snapshots must be initiated every 15 minutes to provide a more recent recovery point than the automated snapshots.
  * Manual snapshots are retained for 90 days.
- * To protect us against accidental backup deletion or longer AWS region outages the S3 bucket must be mirrored to a secondary bucket using S3 object replication.
+ * To protect against accidental backup deletion or longer AWS region outages the S3 bucket must be mirrored to a secondary bucket using S3 object replication.
+	 * This secondary bucket will be in the same region as other backup resources, including the "Offsite" read replica, in order to minimize disaster recovery turnaround time.
 
 ## Compute Resources (EKS)
-* Compute resources 
+Compute resources are managed via the AWS Elastic Kubernetes Service (EKS). These resources include the application itself ("Graylog") as well as the monitoring cluster ("Prometheus"). The Kubernetes pods are deployed onto AWS Fargate instances.
  
 ### Application (Graylog)
 
 ### Monitoring (Prometheus)
 
 ## Settings Database (MongoDB)
+
 
 # Ownership
 This file and the policies contained herein are owned and maintained by the Cloud Services team. You can reach out to @wilwhitlarkgl if you have questions.
