@@ -1,3 +1,4 @@
+
 # Cloud Backup and Recovery Policy
 This policy is designed to protect data within Graylog Cloud to be sure it is not lost and can be recovered in the event of an equipment failure, intentional destruction of data, or disaster.  It encompasses the Retention Cycle for Customers, detailing [Log Retention](#log-retention), [Alerting](#alerting), [Encryption](#encryption), [Replication](#replication) Across Sites and [Procedures](#procedures). General requirements for each of these components will be outlined and specifics related to our platform implementation (a.k.a. ["Platform Component Specifics"](#platform-component-specifics)) will be provided below.
 ## Scope
@@ -10,6 +11,17 @@ specific to a given component (see [Platform Component Specifics](#platform-comp
 	* For example, if a customer bought 90 days of log retention, we have to keep a backup of all those 90 days to be able to fully restore all data.
 * To protect customer data against datacenter failure, backups will be distributed to at least one additional datacenter location.
 ### Alerting
+* Time-series metrics gathering will be employed in order to maintain real-time observability of the cluster state. Examples of observable data include:
+	* Data reads/writes
+	* Duration and completion of automated and manual backups
+	* 40X, 50X or other undesired responses from the search service
+	* Other indications of state as surfaced by the application itself
+ * Where appropriate, time-series metrics that pass an alerting threshold will trigger an entry in an Incident Response system, which will continue to escalate the alert until an incident is acknowledged. Incident acknowledgement and resolution will be covered in the [Procedures](#procedures) section below.
+ * In addition to alerting on time-series metrics, alerting as surfaced by cloud provider may be employed for critical elements, such as the search service entering a fail state ("Red Cluster").
+* Alert auditing and cleanup will be conducted annually as part of standard disaster recovery maintenance. This audit will focus on three areas:
+	* Effectiveness, e.g. "Does this alert detect a state that requires intervention to resolve?"
+	* Actionability, e.g. "If this alert triggers, does it provide a link to a runbook or similar clear route of action to follow?"
+	* Sensitivity, e.g. "Will false positives from this alert contribute to signal fatigue?"
 ### Encryption
 ### Replication
 ### Procedures
