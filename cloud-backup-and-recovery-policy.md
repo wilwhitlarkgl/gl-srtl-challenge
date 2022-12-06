@@ -23,6 +23,26 @@ specific to a given component (see [Platform Component Specifics](#platform-comp
 	* Actionability, e.g. "If this alert triggers, does it provide a link to a runbook or similar clear route of action to follow?"
 	* Sensitivity, e.g. "Will false positives from this alert contribute to signal fatigue?"
 ### Encryption
+* In transit
+	* Data transfer into or outside of the cloud platform will be encrypted using a secure transfer protocol.
+	* For example, the TLS 1.2 protocol or later for HTTPS communication will be employed.
+* At Rest
+	* The following components will be encrypted-at-rest:
+		* Application Components
+			* Application server hard disk volumes
+		* Log Components
+			* All indexes (including backup and high-availability indexes)
+			* Search service logs, including slow logs and error logs
+			* Swap files
+			* All other data in the application directory
+			* Automated snapshots
+			* Manual snapshots
+		* Settings Database Components
+			* Database instances
+			* Automated Backups
+			* Manual Snapshots
+			* Indexes
+	* At a minimum, 256-bit Advanced Encryption Standard (AES-256) will be used for all at-rest encryption.
 ### Replication
 ### Procedures
 # Platform Component Specifics
