@@ -3,6 +3,8 @@ This policy is designed to protect data within Graylog Cloud to be sure it is no
 
 ## Scope
 This policy applies to all data which provides the service delivered (“Graylog Cloud”) that is owned/leased and operated by Graylog, Inc. 
+#### Not covered
+This policy does not cover Bastion (jumpbox) instances, development tools, or other components of the design and troubleshooting processes.
 
 ## General Requirements
 These requirements are to be used by default. They can be overridden by the requirements
@@ -133,11 +135,14 @@ On build: CI/CD pipeline -> ECR -> ECR ("Offsite")
 * Prometheus containers are maintained by the Prometheus Community ([prometheus.io](https://prometheus.io)) and deployed to EKS from the publicly available Docker registry ([prom/prometheus](https://hub.docker.com/r/prom/prometheus)).
 
 ## Settings Database
+Settings Changes: Primary DB -> Secondary DB 0 -> Secondary DB 1 ("Offsite")
+* The settings database makes use of an AWS DocumentDB global cluster to provide a MongoDB-compatible cluster with cross-region replication capacity.
+* The "Primary DB" and "Secondary DB 0" instances will be in the same Availability Zones as the Application pods. (See [Application (Graylog)](#application-graylog) above)
+* The "Secondary DB 1" read replica will be created as a failover target in a separate region (The "Offsite"), and be set to automatically promote should the instances within the primary region fail.
+
 
 # Ownership
 This file and the policies contained herein are owned and maintained by the Cloud Services team. You can reach out to @wilwhitlarkgl if you have questions.
 
 #### Review
 This policy shall be reviewed annually as part of disaster recovery maintenance operations.
-
-
