@@ -1,5 +1,5 @@
 # Cloud Backup and Recovery Policy
-This policy is designed to protect data within Graylog Cloud to be sure it is not lost and can be recovered in the event of an equipment failure, intentional destruction of data, or disaster.  It encompasses the Retention Cycle for Customers, detailing [Log Retention](#log-retention), [Alerting](#alerting), [Encryption](#encryption), [Replication](#replication) Across Sites and [Procedures](#procedures). General requirements for each of these components will be outlined and specifics related to our platform implementation (a.k.a. ["Platform Component Specifics"](#platform-component-specifics)) will be provided below.
+This policy is designed to protect data within Graylog Cloud to be sure it is not lost and can be recovered in the event of an equipment failure, intentional destruction of data, or disaster.  It encompasses the Retention Cycle for Customers, detailing [Log Retention](#log-retention), [Alerting](#alerting), [Encryption](#encryption), [Replication](#replication) Across Sites, and [Procedures](#procedures). General requirements for each of these components will be outlined and specifics related to our platform implementation (a.k.a. ["Platform Component Specifics"](#platform-component-specifics)) will be provided below.
 
 ## Scope
 This policy applies to all data which provides the service delivered (“Graylog Cloud”) that is owned/leased and operated by Graylog, Inc. 
@@ -87,8 +87,13 @@ In its current implementation, the service architecture makes use of the followi
 	* This is used for the Application and Monitoring compute resources.
 * Fargate
 	* EKS invokes on-demand Fargate instances to run its Kubernetes pods.
+* Elastic Container Registry (ECR)
+	* Docker containers deployed through EKS are hosted in AWS via the Elastic Container Registry (ECR). Docker images built via CI/CD are deployed to ECR as part of the build.
 * DocumentDB
 	* Application settings are contained within a MongoDB-compatible cluster and make use of the AWS DocumentDB product.
+* KMS
+	* Encryption-at-rest for the components listed below is managed by the AWS Key Management Service (AWS KMS):
+		* This includes OpenSearch, S3, DocumentDB, and ECR.
 
 
 ## Architecture Diagram
@@ -106,7 +111,7 @@ OpenSearch domain in the event of acquiring the red status or data loss. For mor
  * NOTE: If a cluster becomes red, all automated snapshots fail while the cluster status persists.
 
 ### Manual snapshots
-Every 15 min: OpenSearch domain -> primary S3 bucket -> secondary S3 bucket.
+Every 15 min: OpenSearch domain -> primary S3 bucket -> secondary S3 bucket ("Offsite")
  * Manual snapshots are utilized for cluster recovery, but could also be used for moving data from one cluster to another.
  * As the name suggests, manual snapshot creation has to be initiated. They are stored in an S3 bucket that we provide, and standard S3 charges apply.
  * Manual snapshots must be initiated every 15 minutes to provide a more recent recovery point than the automated snapshots.
@@ -115,17 +120,24 @@ Every 15 min: OpenSearch domain -> primary S3 bucket -> secondary S3 bucket.
 	 * This secondary bucket will be in the same region as other backup resources, including the "Offsite" read replica, in order to minimize disaster recovery turnaround time.
 
 ## Compute Resources (EKS)
-Compute resources are managed via the AWS Elastic Kubernetes Service (EKS). These resources include the application itself ("Graylog") as well as the monitoring cluster ("Prometheus"). The Kubernetes pods are deployed onto AWS Fargate instances.
+Compute resources are managed via the AWS Elastic Kubernetes Service (EKS). These resources include the application itself ("Graylog") as well as the monitoring cluster ("Prometheus"). The Kubernetes pods are deployed onto AWS Fargate instances in different Availability Zones. As Fargate instances are run within their own Virtual Machine (VM), they are automatically protected against vulnerabilities seeking to gain access to resources outside of the container ("Container Escape").
  
 ### Application (Graylog)
+On build: CI/CD pipeline -> ECR -> ECR ("Offsite")
+* Application pods will be deployed in an EKS cluster across a minimum of 2 Availability Zones (AZs) in the same Virtual Private Cloud (VPC).
+* Application containers, when built, will be replicated to at least one additional region (The "Offsite" region) via Cross Region ECR Replication.
+	* This operation is performed automatically when the container is added to the registry.
 
 ### Monitoring (Prometheus)
+* Prometheus server pods are deployed to the same Availability Zones as Application pods. (See [Application (Graylog)](#application-graylog) above)
+* Prometheus containers are maintained by the Prometheus Community ([prometheus.io](https://prometheus.io)) and deployed to EKS from the publicly available Docker registry ([prom/prometheus](https://hub.docker.com/r/prom/prometheus)).
 
-## Settings Database (MongoDB)
-
+## Settings Database
 
 # Ownership
 This file and the policies contained herein are owned and maintained by the Cloud Services team. You can reach out to @wilwhitlarkgl if you have questions.
 
 #### Review
 This policy shall be reviewed annually as part of disaster recovery maintenance operations.
+
+
