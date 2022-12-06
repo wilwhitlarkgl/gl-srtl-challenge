@@ -44,8 +44,21 @@ specific to a given component (see [Platform Component Specifics](#platform-comp
 	* At a minimum, 256-bit Advanced Encryption Standard (AES-256) will be used for all at-rest encryption.
 
 ### Replication
-* 
+* Search Service
+	* The search service shall maintain "warm" replica nodes within the same datacenter, and snapshots of the data within the search service shall be replicated to at least one additional datacenter. 
+* Settings Database
+	* A settings database cluster with a minimum of 3 instances (one "Primary", at least one "Secondary", and one "Offsite") will be utilized.
+		* The "Primary" and "Secondary" instances will exist in separate Availability Zones within the same datacenter.
+		* The "Offsite" instance shall be maintained in a separate datacenter , with its own automatic and manual backup schedule identical to that of the "Primary" settings database.
+* Monitoring
+	* A minimum of 2 monitoring instances will operate in separate Availability Zones.
+* Application
+	* A minimum of 2 application instances will operate in separate Availability Zones.
 ### Procedures
+* Runbooks
+* Disaster Recovery Drills
+	* In order to confirm the ability to fail over and 
+* Maintenance
 
 
 # Platform Component Specifics
@@ -70,7 +83,9 @@ Every 15 min: OpenSearch domain -> primary S3 bucket -> secondary S3 bucket.
  * Manual snapshots must be initiated every 15 minutes to provide a more recent recovery point than the automated snapshots.
  * Manual snapshots are retained for 90 days.
  * To protect us against accidental backup deletion or longer AWS region outages the S3 bucket must be mirrored to a secondary bucket using S3 object replication.
-## Elastic Compute Cloud (EC2)
+## Compute Resources (EKS)
+* Compute resources 
+* 
 ### Application (Graylog)
 ### Monitoring (Prometheus)
 ## Settings Database (MongoDB)
