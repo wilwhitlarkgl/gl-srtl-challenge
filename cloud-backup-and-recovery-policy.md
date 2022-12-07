@@ -99,6 +99,8 @@ In its current implementation, the service architecture makes use of the followi
 
 
 ## Architecture Diagram
+![Architecture Diagram for Cloud Backup and Recovery components](cloud-backup-and-recovery-architecture.png)
+Note: This diagram represents the components and relationships required for this policy *only*. Please see the primary documentation for a more comprehensive diagram.
 
 ## AWS OpenSearch Service
 Snapshots in Amazon OpenSearch Service are backups of a cluster's indexes and state. State includes cluster settings, node information, index settings, and shard allocation. OpenSearch snapshots are incremental, meaning they only store data that changed since the last successful snapshot. The AWS OpenSearch Service provides both automated and manual snapshots. We use both.
