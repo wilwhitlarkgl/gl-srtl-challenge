@@ -1,10 +1,10 @@
 # Cloud Backup and Recovery Policy
-This policy is designed to protect data within Graylog Cloud to be sure it is not lost and can be recovered in the event of an equipment failure, intentional destruction of data, or disaster.  It encompasses the Retention Cycle for Customers, detailing [Log Retention](#log-retention), [Alerting](#alerting), [Encryption](#encryption), [Replication](#replication) Across Sites, and [Procedures](#procedures). General requirements for each of these components will be outlined and specifics related to our platform implementation (a.k.a. ["Platform Component Specifics"](#platform-component-specifics)) will be provided below.
+This policy is designed to protect data within Graylog Cloud to be sure it is not lost and can be recovered in the event of an equipment failure, intentional destruction of data, or disaster.  It encompasses the Retention Cycle for Customers, detailing [Log Retention](#log-retention), [Alerting](#alerting), [Encryption](#encryption), [Replication](#replication) across sites, and [Procedures](#procedures). General requirements for each of these components will be outlined and specifics related to our platform implementation (a.k.a. ["Platform Component Specifics"](#platform-component-specifics)) will be provided below.
 
 ## Scope
 This policy applies to all data which provides the service delivered (“Graylog Cloud”) that is owned/leased and operated by Graylog, Inc. 
 #### Not Covered
-This policy does not cover Bastion (jumpbox) instances, development tools, or other components of the design and troubleshooting processes.
+This policy does not cover bastion (jumpbox) instances, development tools, or other components of the design and troubleshooting processes.
 
 ## General Requirements
 These requirements are to be used by default. They can be overridden by the requirements
@@ -29,13 +29,15 @@ specific to a given component (see [Platform Component Specifics](#platform-comp
 	* Sensitivity, e.g. "Will false positives from this alert contribute to signal fatigue?"
 
 ### Encryption
-* In transit
+* In Transit
 	* Data transfer into or outside of the cloud platform will be encrypted using a secure transfer protocol.
 	* For example, the TLS 1.2 protocol or later for HTTPS communication will be employed.
 * At Rest
 	* The following components will be encrypted-at-rest:
 		* Application Components
-			* Application server hard disk volumes
+			* Application server images, including:
+				* Container Images
+				* Hard Disk Images (where applicable)
 		* Log Components
 			* All indexes (including backup and high-availability indexes)
 			* Search service logs, including slow logs and error logs
