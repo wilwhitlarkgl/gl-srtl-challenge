@@ -137,9 +137,9 @@ Compute resources are managed via the AWS Elastic Kubernetes Service (EKS). Thes
  
 ### Application (Graylog)
 ![Diagram for Application (Graylog)](application-graylog-diagram.png)
-* Application pods will be deployed in an EKS cluster across a minimum of 2 Availability Zones (AZs) in the same Virtual Private Cloud (VPC).
-* Application containers, when built, will be replicated to at least one additional region (The "Offsite" region) via Cross Region ECR Replication.
+* Application containers, when built, will be added to AWS Elastic Container Registry (ECR) and replicated to at least one additional region (The "Offsite" region) via Cross Region ECR Replication.
 	* This operation is performed automatically when the container is added to the registry.
+* Application pods will be deployed in an EKS cluster across a minimum of 2 Availability Zones (AZs) in the same Virtual Private Cloud (VPC).
 
 ### Monitoring (Prometheus)
 * Prometheus server pods are deployed to the same Availability Zones as Application pods. (See [Application (Graylog)](#application-graylog) above)
