@@ -3,7 +3,7 @@ This policy is designed to protect data within Graylog Cloud to be sure it is no
 
 ## Scope
 This policy applies to all data which provides the service delivered (“Graylog Cloud”) that is owned/leased and operated by Graylog, Inc. 
-#### Not covered
+#### Not Covered
 This policy does not cover Bastion (jumpbox) instances, development tools, or other components of the design and troubleshooting processes.
 
 ## General Requirements
@@ -99,14 +99,14 @@ In its current implementation, the service architecture makes use of the followi
 
 
 ## Architecture Diagram
+_Note: This diagram represents the components and relationships required for this policy **only**. Please see the primary documentation for a more comprehensive diagram._
 ![Architecture Diagram for Cloud Backup and Recovery components](cloud-backup-and-recovery-architecture.png)
-Note: This diagram represents the components and relationships required for this policy *only*. Please see the primary documentation for a more comprehensive diagram.
 
 ## AWS OpenSearch Service
 Snapshots in Amazon OpenSearch Service are backups of a cluster's indexes and state. State includes cluster settings, node information, index settings, and shard allocation. OpenSearch snapshots are incremental, meaning they only store data that changed since the last successful snapshot. The AWS OpenSearch Service provides both automated and manual snapshots. We use both.
 
-### Automated snapshots
-Every hour: OpenSearch domain -> preconfigured S3 bucket
+### Automated Snapshots
+![Diagram for Automated Snapshots](automated-snapshots-diagram.png)
  * Automated snapshots are only for cluster recovery. They can be used to restore the
 OpenSearch domain in the event of acquiring the red status or data loss. For more information, see Restoring snapshots.
  * The OpenSearch service stores automated snapshots in a preconfigured Amazon S3 bucket at no additional charge.
@@ -114,8 +114,8 @@ OpenSearch domain in the event of acquiring the red status or data loss. For mor
  * The objects in the preconfigured S3 bucket cannot be accessed directly.
  * NOTE: If a cluster becomes red, all automated snapshots fail while the cluster status persists.
 
-### Manual snapshots
-Every 15 min: OpenSearch domain -> primary S3 bucket -> secondary S3 bucket ("Offsite")
+### Manual Snapshots
+![Diagram for Manual Snapshots](manual-snapshots-diagram.png)
  * Manual snapshots are utilized for cluster recovery, but could also be used for moving data from one cluster to another.
  * As the name suggests, manual snapshot creation has to be initiated. They are stored in an S3 bucket that we provide, and standard S3 charges apply.
  * Manual snapshots must be initiated every 15 minutes to provide a more recent recovery point than the automated snapshots.
@@ -127,7 +127,7 @@ Every 15 min: OpenSearch domain -> primary S3 bucket -> secondary S3 bucket ("Of
 Compute resources are managed via the AWS Elastic Kubernetes Service (EKS). These resources include the application itself ("Graylog") as well as the monitoring cluster ("Prometheus"). The Kubernetes pods are deployed onto AWS Fargate instances in different Availability Zones. As Fargate instances are run within their own Virtual Machine (VM), they are automatically protected against vulnerabilities seeking to gain access to resources outside of the container ("Container Escape").
  
 ### Application (Graylog)
-On build: CI/CD pipeline -> ECR -> ECR ("Offsite")
+![Diagram for Application (Graylog)](application-graylog-diagram.png)
 * Application pods will be deployed in an EKS cluster across a minimum of 2 Availability Zones (AZs) in the same Virtual Private Cloud (VPC).
 * Application containers, when built, will be replicated to at least one additional region (The "Offsite" region) via Cross Region ECR Replication.
 	* This operation is performed automatically when the container is added to the registry.
@@ -137,7 +137,7 @@ On build: CI/CD pipeline -> ECR -> ECR ("Offsite")
 * Prometheus containers are maintained by the Prometheus Community ([prometheus.io](https://prometheus.io)) and deployed to EKS from the publicly available Docker registry ([prom/prometheus](https://hub.docker.com/r/prom/prometheus)).
 
 ## Settings Database
-Settings Changes: Primary DB -> Secondary DB 0 -> Secondary DB 1 ("Offsite")
+![Diagram for Settings Database](settings-database-diagram.png)
 * The settings database makes use of an AWS DocumentDB global cluster to provide a MongoDB-compatible cluster with cross-region replication capacity.
 * The "Primary DB" and "Secondary DB 0" instances will be in the same Availability Zones as the Application pods. (See [Application (Graylog)](#application-graylog) above)
 * The "Secondary DB 1" read replica will be created as a failover target in a separate region (The "Offsite"), and be set to automatically promote should the instances within the primary region fail.
