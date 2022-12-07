@@ -146,7 +146,7 @@ Compute resources are managed via the AWS Elastic Kubernetes Service (EKS). Thes
 * Prometheus containers are maintained by the Prometheus Community ([prometheus.io](https://prometheus.io)) and deployed to EKS from the publicly available Docker registry ([prom/prometheus](https://hub.docker.com/r/prom/prometheus)).
 
 ## Settings Database
-![Diagram for Settings Database](settings-database-diagram.png)
+![Diagram for Settings Database](settings-changes-diagram.png)
 * The settings database makes use of an AWS DocumentDB global cluster to provide a MongoDB-compatible cluster with cross-region replication capacity.
 * The "Primary DB" and "Secondary DB 0" instances will be in the same Availability Zones as the Application pods. (See [Application (Graylog)](#application-graylog) above)
 * The "Secondary DB 1" read replica will be created as a failover target in a separate region (The "Offsite"), and be set to automatically promote should the instances within the primary region fail.
