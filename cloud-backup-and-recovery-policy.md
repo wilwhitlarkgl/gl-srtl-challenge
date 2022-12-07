@@ -64,9 +64,9 @@ specific to a given component (see [Platform Component Specifics](#platform-comp
 	* Docker containers, instance images, and any necessary configuration or other secondary components will be replicated to a separate datacenter every time such components are updated.
 
 ### Procedures
-* Indicents
+* Incidents
 	* Alerted states (See "[Alerting](#alerting)" above) will trigger an entry in an Incident Repsonse system, and begin by alerting the team responsible for the component in the system generating the incident.
-	* If this entry goes unacknnowledged in the system, it will continue to escalate to higher authority until it is acknowledged.
+	* If this entry goes unacknowledged in the system, it will continue to escalate to higher authority until it is acknowledged.
 	* Once acknowledged, it is the responsibility of the acknowledging party to provide an initial communication to the appropriate communications channel.
 	* Once communicated, it falls to that party either to follow the linked Runbook (see below) or delegate resolution to the appropriate party.
 	* Once the condition for the alert is no longer met or it's determined that the state is a false positive, the incident can be closed.
