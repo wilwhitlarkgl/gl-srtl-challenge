@@ -56,16 +56,23 @@ specific to a given component (see [Platform Component Specifics](#platform-comp
 * Settings Database
 	* A settings database cluster with a minimum of 3 instances (one "Primary", at least one "Secondary", and one "Offsite") will be utilized.
 		* The "Primary" and "Secondary" instances will exist in separate Availability Zones within the same datacenter.
-		* The "Offsite" instance shall be maintained in a separate datacenter , with its own automatic and manual backup schedule identical to that of the "Primary" settings database.
+		* The "Offsite" instance shall be maintained in a separate datacenter, with its own automatic and manual backup schedule identical to that of the "Primary" settings database.
 * Monitoring
 	* A minimum of 2 monitoring instances will operate in separate Availability Zones.
 * Application
 	* A minimum of 2 application instances will operate in separate Availability Zones.
-	* Docker containers, instance images and any necessary configuration or other secondary components will be replicated to a separate datacenter every time such components are updated.
+	* Docker containers, instance images, and any necessary configuration or other secondary components will be replicated to a separate datacenter every time such components are updated.
 
 ### Procedures
+* Indicents
+	* Alerted states (See "[Alerting](#alerting)" above) will trigger an entry in an Incident Repsonse system, and begin by alerting the team responsible for the component in the system generating the incident.
+	* If this entry goes unacknnowledged in the system, it will continue to escalate to higher authority until it is acknowledged.
+	* Once acknowledged, it is the responsibility of the acknowledging party to provide an initial communication to the appropriate communications channel.
+	* Once communicated, it falls to that party either to follow the linked Runbook (see below) or delegate resolution to the appropriate party.
+	* Once the condition for the alert is no longer met or it's determined that the state is a false positive, the incident can be closed.
+		* In the event of a false positive, the appropriate communications channel may be notified, and the condition muted against further false positives if appropriate.
 * Runbooks
-	* Alerted states that trigger Incident Response (See [Alerting](#alerting) above), unless resolution steps are simple enough to include within the alert itself, will link to a "Runbook" with explicit resolution steps and resources.
+	* Alerted states that trigger Incident Response (See above), unless resolution steps are simple enough to include within the alert itself, will link to a "Runbook" with explicit resolution steps and resources.
 		* These "Runbooks" will be maintained in the same manner as other company documentation and are the collective responsibility of all developers to keep up to date.
 		* As with other alerting components, auditing and cleanup will be conducted annually as part of standard disaster recovery maintenance.
 * Disaster Recovery Drills
